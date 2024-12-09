@@ -1,0 +1,16 @@
+{
+    "name": "otaodev/microservice-video-catalog",
+    "description": "App with PHP - Catalog Video",
+    "authors": [
+        {
+            "name": "Tiago Oliveira",
+            "email": "contato@otao.dev.br"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Core\\": "src/Core/"
+        }
+    },
+    "require": {}
+}

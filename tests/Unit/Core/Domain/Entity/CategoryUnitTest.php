@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Core\Domain\Entity;
 
 use Core\Domain\Entity\Category;
+use Core\Domain\Exceptions\EntityValidationException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -101,5 +102,37 @@ class CategoryUnitTest extends TestCase
 
         $this->assertEquals('new_name', $category->name);
         $this->assertEquals('', $category->description);
+    }
+
+    public function testShouldThrowsExceptionIfNameIsEmpty(): void
+    {
+        $this->expectException(EntityValidationException::class);
+        $this->expectExceptionMessage('ame cannot be empty');
+        
+        $category = new Category(name: '');
+    }
+
+    public function testShouldThrowsExceptionIfNameHasTwoCharacters(): void
+    {
+        $this->expectException(EntityValidationException::class);
+        $this->expectExceptionMessage('name cannot be less than 3');
+        
+        $category = new Category(name: 'Hi');
+    }
+
+    public function testShouldThrowsExceptionIfDescriptionHasTwoCharacters(): void
+    {
+        $this->expectException(EntityValidationException::class);
+        $this->expectExceptionMessage('description cannot be less than 3');
+        
+        $category = new Category(name: 'Valid name', description: 'hi');
+    }
+
+    public function testShouldThrowsExceptionIfDescriptionIsLongerThan255Characters(): void
+    {
+        $this->expectException(EntityValidationException::class);
+        $this->expectExceptionMessage('description cannot be greather than 255');
+        
+        $category = new Category(name: 'Valid name', description: str_repeat('a', 256));
     }
 }

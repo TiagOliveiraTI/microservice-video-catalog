@@ -3,6 +3,12 @@
 ' cores amarelo #fbfdb8 , vermelho #ffa19c, verde #a3fcb9, azul #a7d7d7
 package "Core" {
     package "Domain" #fbfdb8d9 {
+        package "Exceptions"{
+            exception EntityValidationException {
+
+            }
+        }
+
         package "Entity"{
             ' - private #protected +public ~package private
 
@@ -20,11 +26,13 @@ package "Core" {
                 + {method} activate(): void
                 + {method} disable(): void
                 + {method} update(string name, string description): void
+                + {method} validate(): void
             }
         }
     }
 }
 
-Category --|> "uses" MagicMethodsTrait
+Category --> "uses" MagicMethodsTrait
 
+Category --> "lança" EntityValidationException
 @enduml

@@ -107,7 +107,7 @@ class CategoryUnitTest extends TestCase
     public function testShouldThrowsExceptionIfNameIsEmpty(): void
     {
         $this->expectException(EntityValidationException::class);
-        $this->expectExceptionMessage('ame cannot be empty');
+        $this->expectExceptionMessage('name cannot be empty');
         
         $category = new Category(name: '');
     }

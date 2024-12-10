@@ -3,6 +3,12 @@
 ' cores amarelo #fbfdb8 , vermelho #ffa19c, verde #a3fcb9, azul #a7d7d7
 package "Core" {
     package "Domain" #fbfdb8d9 {
+        package "Validation" {
+            class DomainValidation {
+                + {static} void notNull(string value, string exceptionMessage = null)
+            }
+        }
+
         package "Exceptions"{
             exception EntityValidationException {
 
@@ -23,16 +29,17 @@ package "Core" {
                 - string name
                 - string description
                 - boolean name
-                + {method} activate(): void
-                + {method} disable(): void
-                + {method} update(string name, string description): void
-                + {method} validate(): void
+                + void activate()
+                + void disable()
+                + void update(string name, string description)
+                + void validate()
             }
         }
     }
 }
 
-Category --> "uses" MagicMethodsTrait
+Category ..> "uses" MagicMethodsTrait
+Category ..> "uses" DomainValidation
 
-Category --> "lança" EntityValidationException
+Category ..> "throws" EntityValidationException
 @enduml

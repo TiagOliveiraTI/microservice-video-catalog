@@ -125,14 +125,14 @@ class CategoryUnitTest extends TestCase
         $this->expectException(EntityValidationException::class);
         $this->expectExceptionMessage('description cannot be less than 3');
         
-        $category = new Category(name: 'Valid name', description: 'hi');
+        new Category(name: 'Valid name', description: 'hi');
     }
 
     public function testShouldThrowsExceptionIfDescriptionIsLongerThan255Characters(): void
     {
         $this->expectException(EntityValidationException::class);
-        $this->expectExceptionMessage('description cannot be greather than 255');
+        $this->expectExceptionMessage('description cannot be greather than 255 characters');
         
-        $category = new Category(name: 'Valid name', description: str_repeat('a', 256));
+        new Category(name: 'Valid name', description: str_repeat('a', 256));
     }
 }

@@ -4,6 +4,8 @@ namespace Core\Domain\Entity;
 
 use Core\Domain\Entity\Traits\MagicMethodsTrait;
 use Core\Domain\Exceptions\EntityValidationException;
+use Core\Domain\Validation\DomainValidation;
+use Tests\Unit\Core\Domain\Validation\DomainValidationTest;
 
 class Category
 {
@@ -44,20 +46,23 @@ class Category
      */
     public function validate(): void
     {
-        if(empty($this->name)) {
-            throw new EntityValidationException("name cannot be empty");
-        }
+        DomainValidation::notNull($this->name, "name cannot be empty");
+        DomainValidation::strMinLength(
+            $this->name, 
+            self::MINIMUM_NAME_LETTERS, 
+            "name cannot be less than " . self::MINIMUM_NAME_LETTERS
+        );
 
-        if( ! empty($this->name) && strlen($this->name) < self::MINIMUM_NAME_LETTERS) {
-            throw new EntityValidationException("name cannot be less than " . self::MINIMUM_NAME_LETTERS);
-        }
+        DomainValidation::strMinLength(
+            $this->description, 
+            self::MINIMUM_DESCRIPTION_LETTERS, 
+            "description cannot be less than " . self::MINIMUM_DESCRIPTION_LETTERS
+        );
 
-        if( ! empty($this->description) && strlen($this->description) < self::MINIMUM_DESCRIPTION_LETTERS) {
-            throw new EntityValidationException("description cannot be less than " . self::MINIMUM_DESCRIPTION_LETTERS);
-        }
-
-        if( ! empty($this->description) && strlen($this->description) > self::MAXIMUM_DESCRIPTION_LETTERS) {
-            throw new EntityValidationException("description cannot be greather than " . self::MAXIMUM_DESCRIPTION_LETTERS);
-        }
+        DomainValidation::strMaxLength(
+            $this->description, 
+            self::MAXIMUM_DESCRIPTION_LETTERS, 
+            "description cannot be greather than " . self::MAXIMUM_DESCRIPTION_LETTERS . " characters"
+        );
     }
 }

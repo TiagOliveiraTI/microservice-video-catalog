@@ -6,6 +6,8 @@ package "Core" {
         package "Validation" {
             class DomainValidation {
                 + {static} void notNull(string value, string exceptionMessage = null)
+                + {static} void strMaxLength(string $value, int $maxLength = 255, string $message = null)
+                + {static} void strMinLength(string $value, int $minLength = 10, string $message = null)
             }
         }
 

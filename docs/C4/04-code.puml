@@ -1,0 +1,24 @@
+@startuml Diagrama de Classe
+
+package "Core" {
+    package "Domain" {
+        package "Entity" {
+            ' - private #protected +public ~package private
+            class Category {
+                - string name
+                - string description
+                - boolean name
+            }
+
+            package "Traits" {
+                abstract class MagicMethodsTrait {
+                    mixed __get()
+                }
+            }
+        }
+    }
+}
+
+Category --|> "use" MagicMethodsTrait
+
+@enduml

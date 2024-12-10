@@ -1,24 +1,29 @@
 @startuml Diagrama de Classe
 
+' cores amarelo #fbfdb8 , vermelho #ffa19c, verde #a3fcb9, azul #a7d7d7
 package "Core" {
-    package "Domain" {
-        package "Entity" {
+    package "Domain" #fbfdb8d9 {
+        package "Entity"{
             ' - private #protected +public ~package private
-            class Category {
-                - string name
-                - string description
-                - boolean name
-            }
 
             package "Traits" {
                 abstract class MagicMethodsTrait {
                     mixed __get()
                 }
             }
+            
+            class Category {
+                - string id
+                - string name
+                - string description
+                - boolean name
+                + {method} activate(): void
+                + {method} disable(): void
+            }
         }
     }
 }
 
-Category --|> "use" MagicMethodsTrait
+Category --|> "uses" MagicMethodsTrait
 
 @enduml

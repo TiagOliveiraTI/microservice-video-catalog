@@ -14,7 +14,6 @@ class CategoryUnitTest extends TestCase
     public function testAttributes(): void
     {
         $category = new Category(
-            id: 'any',
             name: 'New Cat',
             description: 'New desc',
             isActive: true,
@@ -23,5 +22,29 @@ class CategoryUnitTest extends TestCase
         $this->assertEquals('New Cat', $category->name);
         $this->assertEquals('New desc', $category->description);
         $this->assertTrue($category->isActive);
+    }
+
+    public function testShouldActivate(): void
+    {
+        $category = new Category(
+            name: 'New Cat',
+            isActive: false
+        );
+
+        $this->assertFalse($category->isActive);
+        $category->activate();
+        $this->assertTrue($category->isActive);
+    }
+
+    public function testShouldDisable(): void
+    {
+        $category = new Category(
+            name: 'New Cat'
+        );
+
+        $this->assertTrue($category->isActive);
+        $category->disable();
+        $this->assertFalse($category->isActive);
+        
     }
 }

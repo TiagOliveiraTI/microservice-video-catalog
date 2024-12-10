@@ -11,7 +11,7 @@ package "Core" {
                     mixed __get()
                 }
             }
-            
+
             class Category {
                 - string id
                 - string name
@@ -19,6 +19,7 @@ package "Core" {
                 - boolean name
                 + {method} activate(): void
                 + {method} disable(): void
+                + {method} update(string name, string description): void
             }
         }
     }

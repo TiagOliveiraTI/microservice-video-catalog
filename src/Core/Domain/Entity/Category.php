@@ -24,4 +24,10 @@ class Category
     {
         $this->isActive = false;
     }
+
+    public function update(string $name, string $description = ''): void
+    {
+        $this->name = $name;
+        $this->description = empty($description) ? $this->description : $description;
+    }
 }

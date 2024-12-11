@@ -5,9 +5,9 @@ package "Core" {
     package "Domain" <<Frame>> #fbfdb8 {
         package "Validation" <<Frame>> {
             class DomainValidation {
-                + {static} void notNull(string value, string exceptionMessage = null)
-                + {static} void strMaxLength(string $value, int $maxLength = 255, string $message = null)
-                + {static} void strMinLength(string $value, int $minLength = 10, string $message = null)
+                + {static} notNull(string value, string exceptionMessage = null): void
+                + {static} strMaxLength(string $value, int $maxLength = 255, string $message = null): void
+                + {static} strMinLength(string $value, int $minLength = 10, string $message = null): void
             }
         }
 
@@ -19,9 +19,21 @@ package "Core" {
 
         package "ValueObject" <<Frame>>{
             class Uuid {
-                + {static} self random()
-                + {static} string __toString()
-                - {static} void ensureIsValid(string id)
+                + {static} random(): self
+                + {static} __toString(): string
+                - {static} ensureIsValid(string id): void
+            }
+        }
+
+        package "Repository" {
+            interface CategoryRepositoryInterface {
+                + insert(Category $category): Category
+                + findAll(string $filter = '', $order = 'DESC'): array
+                + findById(string $id): array
+                + paginate(string $filter = '', $order = 'DESC', int $page = 1, int $totalPage = 15): array
+                + update(Category $category): Category
+                + delete(string $id): bool
+                + toCategory(object $data): Category
             }
         }
         
@@ -30,22 +42,20 @@ package "Core" {
 
             package "Traits" <<Frame>>{
                 abstract class MagicMethodsTrait {
-                    mixed __get()
-                    string id()
+                    __get(): mixed
+                    id(): string
                 }
             }
-
-
 
             Entity Category {
                 - Uuid|string id
                 - string name
                 - string description
                 - boolean name
-                + void activate()
-                + void disable()
-                + void update(string name, string description)
-                + void validate()
+                + activate(): void
+                + disable(): void
+                + update(string name, string description): void
+                + validate(): void
             }
         }
     }
@@ -54,6 +64,8 @@ package "Core" {
 Category ..* "uses" MagicMethodsTrait
 Category ..> "uses" DomainValidation
 Category ..* "uses" Uuid
+
+CategoryRepositoryInterface --* "uses" Category
 
 Category ..> "throws" EntityValidationException
 @enduml

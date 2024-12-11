@@ -7,13 +7,16 @@ namespace Tests\Unit\Core\Domain\Entity;
 use Core\Domain\Entity\Category;
 use Core\Domain\Exceptions\EntityValidationException;
 use Core\Domain\Validation\DomainValidation;
+use Core\Domain\ValueObject\Uuid as ValueObjectUuid;
 use Exception;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
 #[CoversClass(Category::class)]
 #[CoversClass(DomainValidation::class)]
+#[CoversClass(ValueObjectUuid::class)]
 class CategoryUnitTest extends TestCase
 {
     public function testAttributes(): void
@@ -29,6 +32,20 @@ class CategoryUnitTest extends TestCase
         $this->assertEquals('New Cat', $category->name);
         $this->assertEquals('New desc', $category->description);
         $this->assertTrue($category->isActive);
+    }
+
+    public function testAttributesThrowsExceptionIfIdIsInvalid(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Core\Domain\ValueObject\Uuid does not allow the value <invalid_id>');
+
+        $category = new Category(
+            name: 'New Cat',
+            id: 'invalid_id',
+            description: 'New desc',
+            isActive: true,
+        );
+        
     }
 
     public function testShouldThrowsExceptionIfCallAnInvalidProperty(): void

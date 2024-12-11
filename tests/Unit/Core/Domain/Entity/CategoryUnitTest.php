@@ -6,10 +6,13 @@ namespace Tests\Unit\Core\Domain\Entity;
 
 use Core\Domain\Entity\Category;
 use Core\Domain\Exceptions\EntityValidationException;
+use Core\Domain\Validation\DomainValidation;
+use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Category::class)]
+#[CoversClass(DomainValidation::class)]
 class CategoryUnitTest extends TestCase
 {
     public function testAttributes(): void
@@ -23,6 +26,19 @@ class CategoryUnitTest extends TestCase
         $this->assertEquals('New Cat', $category->name);
         $this->assertEquals('New desc', $category->description);
         $this->assertTrue($category->isActive);
+    }
+
+    public function testShouldThrowsExceptionIfCallAnInvalidProperty(): void
+    {
+        $this->expectException(Exception::class);
+
+        $category = new Category(
+            name: 'New Cat',
+            description: 'New desc',
+            isActive: true,
+        );
+
+        $this->assertEquals('New Cat', $category->any);
     }
 
     public function testShouldActivate(): void
@@ -59,14 +75,54 @@ class CategoryUnitTest extends TestCase
             isActive: true,
         );
 
+        $description = str_repeat('a', 255);
         $category->update(
             name: 'new_name',
-            description: 'new_desc',
+            description: $description,
         );
 
         $this->assertEquals('new_name', $category->name);
-        $this->assertEquals('new_desc', $category->description);
+        $this->assertEquals($description, $category->description);
 
+    }
+
+    public function testShouldUpdateWIthMinDescriptionCharacters(): void
+    {
+        $uuid = 'uuid.value';
+        $category = new Category(
+            id: $uuid,
+            name: 'New Cat',
+            description: 'New desc',
+            isActive: true,
+        );
+
+        $description = str_repeat('a', 3);
+        $category->update(
+            name: 'new_name',
+            description: $description,
+        );
+
+        $this->assertEquals('new_name', $category->name);
+        $this->assertEquals($description, $category->description);
+
+    }
+
+    public function testShouldThrowsExceptionIfTryUpdateWithAInvalidName(): void
+    {
+        $this->expectException(EntityValidationException::class);
+        $this->expectExceptionMessage('name cannot be empty');
+
+        $uuid = 'uuid.value';
+        $category = new Category(
+            id: $uuid,
+            name: 'New Cat',
+            description: 'New desc',
+            isActive: true,
+        );
+
+        $category->update(
+            name: '',
+        );
     }
 
     public function testShouldUpdateWithoutDescription(): void

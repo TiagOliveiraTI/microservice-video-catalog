@@ -5,7 +5,6 @@ namespace Core\Domain\Entity;
 use Core\Domain\Entity\Traits\MagicMethodsTrait;
 use Core\Domain\Exceptions\EntityValidationException;
 use Core\Domain\Validation\DomainValidation;
-use Tests\Unit\Core\Domain\Validation\DomainValidationTest;
 
 class Category
 {
@@ -24,29 +23,45 @@ class Category
         $this->validate();
     }
 
+    /**
+     * @return void
+     */
     public function activate(): void
     {
         $this->isActive = true;
     }
 
+    /**
+     * @return void
+     */
     public function disable(): void
     {
         $this->isActive = false;
     }
 
+    /**
+     * @param string $name
+     * @param string $description
+     * 
+     * @return void
+     */
     public function update(string $name, string $description = ''): void
     {
-        $this->validate();
         $this->name = $name;
         $this->description = empty($description) ? $this->description : $description;
+
+        $this->validate();
     }
 
     /**
      * @throws EntityValidationException
+     * 
+     * @return void
      */
-    public function validate(): void
+    private function validate(): void
     {
         DomainValidation::notNull($this->name, "name cannot be empty");
+
         DomainValidation::strMinLength(
             $this->name, 
             self::MINIMUM_NAME_LETTERS, 

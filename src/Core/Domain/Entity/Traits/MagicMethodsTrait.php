@@ -21,4 +21,12 @@ trait MagicMethodsTrait
 
         throw new Exception("Property $property not found in class $className");
     }
+
+    /**
+     * @return string
+     */
+    public function id(): string
+    {
+        return (string) $this->id;
+    }
 }

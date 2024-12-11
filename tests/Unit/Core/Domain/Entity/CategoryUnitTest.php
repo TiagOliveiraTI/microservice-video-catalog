@@ -10,6 +10,7 @@ use Core\Domain\Validation\DomainValidation;
 use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 #[CoversClass(Category::class)]
 #[CoversClass(DomainValidation::class)]
@@ -23,6 +24,8 @@ class CategoryUnitTest extends TestCase
             isActive: true,
         );
 
+        $this->assertNotEmpty($category->id);
+        $this->assertIsString($category->id());
         $this->assertEquals('New Cat', $category->name);
         $this->assertEquals('New desc', $category->description);
         $this->assertTrue($category->isActive);
@@ -67,7 +70,7 @@ class CategoryUnitTest extends TestCase
 
     public function testShouldUpdate(): void
     {
-        $uuid = 'uuid.value';
+        $uuid = Uuid::uuid4()->toString();
         $category = new Category(
             id: $uuid,
             name: 'New Cat',
@@ -81,6 +84,7 @@ class CategoryUnitTest extends TestCase
             description: $description,
         );
 
+        $this->assertEquals($uuid, $category->id());
         $this->assertEquals('new_name', $category->name);
         $this->assertEquals($description, $category->description);
 
@@ -88,7 +92,7 @@ class CategoryUnitTest extends TestCase
 
     public function testShouldUpdateWIthMinDescriptionCharacters(): void
     {
-        $uuid = 'uuid.value';
+        $uuid = Uuid::uuid4()->toString();
         $category = new Category(
             id: $uuid,
             name: 'New Cat',
@@ -112,7 +116,8 @@ class CategoryUnitTest extends TestCase
         $this->expectException(EntityValidationException::class);
         $this->expectExceptionMessage('name cannot be empty');
 
-        $uuid = 'uuid.value';
+        $uuid = Uuid::uuid4()->toString();
+
         $category = new Category(
             id: $uuid,
             name: 'New Cat',
@@ -127,7 +132,8 @@ class CategoryUnitTest extends TestCase
 
     public function testShouldUpdateWithoutDescription(): void
     {
-        $uuid = 'uuid.value';
+        $uuid = Uuid::uuid4()->toString();
+
         $category = new Category(
             id: $uuid,
             name: 'New Cat',
@@ -145,7 +151,8 @@ class CategoryUnitTest extends TestCase
 
     public function testShouldUpdateWithDefaultDescription(): void
     {
-        $uuid = 'uuid.value';
+        $uuid = Uuid::uuid4()->toString();
+
         $category = new Category(
             id: $uuid,
             name: 'New Cat',

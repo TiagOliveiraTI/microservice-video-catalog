@@ -2,8 +2,8 @@
 
 ' cores amarelo #fbfdb8 , vermelho #ffa19c, verde #a3fcb9, azul #a7d7d7
 package "Core" {
-    package "Domain" #fbfdb8d9 {
-        package "Validation" {
+    package "Domain" <<Frame>> #fbfdb8 {
+        package "Validation" <<Frame>> {
             class DomainValidation {
                 + {static} void notNull(string value, string exceptionMessage = null)
                 + {static} void strMaxLength(string $value, int $maxLength = 255, string $message = null)
@@ -11,23 +11,34 @@ package "Core" {
             }
         }
 
-        package "Exceptions"{
+        package "Exceptions" <<Frame>> {
             exception EntityValidationException {
 
             }
         }
 
-        package "Entity"{
+        package "ValueObject" <<Frame>>{
+            class Uuid {
+                + {static} self random()
+                + {static} string __toString()
+                - {static} void ensureIsValid(string id)
+            }
+        }
+        
+        package "Entity" <<Frame>>{
             ' - private #protected +public ~package private
 
-            package "Traits" {
+            package "Traits" <<Frame>>{
                 abstract class MagicMethodsTrait {
                     mixed __get()
+                    string id()
                 }
             }
 
-            class Category {
-                - string id
+
+
+            Entity Category {
+                - Uuid|string id
                 - string name
                 - string description
                 - boolean name
@@ -40,8 +51,9 @@ package "Core" {
     }
 }
 
-Category ..> "uses" MagicMethodsTrait
+Category ..* "uses" MagicMethodsTrait
 Category ..> "uses" DomainValidation
+Category ..* "uses" Uuid
 
 Category ..> "throws" EntityValidationException
 @enduml

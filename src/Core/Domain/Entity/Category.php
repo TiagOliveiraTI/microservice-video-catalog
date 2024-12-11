@@ -5,6 +5,7 @@ namespace Core\Domain\Entity;
 use Core\Domain\Entity\Traits\MagicMethodsTrait;
 use Core\Domain\Exceptions\EntityValidationException;
 use Core\Domain\Validation\DomainValidation;
+use Core\Domain\ValueObject\Uuid;
 
 class Category
 {
@@ -15,11 +16,12 @@ class Category
     const MAXIMUM_DESCRIPTION_LETTERS = 255;
 
     public function __construct(
-        private string $id = '',
+        private Uuid|string $id = '',
         private string $name = '',
         private string $description = '',
         private bool $isActive = true,
     ) {
+        $this->id = $this->id ? new Uuid($this->id) : Uuid::random();
         $this->validate();
     }
 

@@ -6,6 +6,7 @@ use Core\Domain\Entity\Traits\MagicMethodsTrait;
 use Core\Domain\Exceptions\EntityValidationException;
 use Core\Domain\Validation\DomainValidation;
 use Core\Domain\ValueObject\Uuid;
+use DateTime;
 
 class Category
 {
@@ -20,8 +21,12 @@ class Category
         private string $name = '',
         private string $description = '',
         private bool $isActive = true,
+        private DateTime|string $createdAt = '',
+        private DateTime|string $updatedAt = '',
     ) {
         $this->id = $this->id ? new Uuid($this->id) : Uuid::random();
+
+        $this->createdAt = $this->createdAt ?: new DateTime($this->createdAt );
         $this->validate();
     }
 

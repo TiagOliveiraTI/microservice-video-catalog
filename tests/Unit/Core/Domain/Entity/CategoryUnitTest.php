@@ -8,6 +8,7 @@ use Core\Domain\Entity\Category;
 use Core\Domain\Exceptions\EntityValidationException;
 use Core\Domain\Validation\DomainValidation;
 use Core\Domain\ValueObject\Uuid as ValueObjectUuid;
+use DateTime;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -170,14 +171,18 @@ class CategoryUnitTest extends TestCase
     {
         $uuid = Uuid::uuid4()->toString();
 
+        $date = new DateTime();
+
         $category = new Category(
             id: $uuid,
             name: 'New Cat',
             isActive: true,
+            createdAt: $date
         );
 
         $category->update(
             name: 'new_name',
+            
         );
 
         $this->assertEquals('new_name', $category->name);
@@ -214,5 +219,24 @@ class CategoryUnitTest extends TestCase
         $this->expectExceptionMessage('description cannot be greather than 255 characters');
         
         new Category(name: 'Valid name', description: str_repeat('a', 256));
+    }
+
+    public function testConstructorWithEmptyCreatedAt()
+    {
+        // Cria uma nova instância sem passar createdAt
+        $category = new Category(name: 'New Cat',);
+
+        // Verifica se createdAt é uma instância de DateTime
+        $this->assertInstanceOf(DateTime::class, $category->createdAt);
+    }
+
+    public function testGetCreatedAt()
+    {
+        $date = new DateTime();
+        $category = new Category(name: 'New Cat', createdAt: $date);
+
+        $formattedDate = $category->createdAt();
+
+        $this->assertEquals($date->format('Y-m-d H:i:s'), $formattedDate);
     }
 }

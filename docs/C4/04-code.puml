@@ -51,7 +51,10 @@ package "Core" {
                 - Uuid|string id
                 - string name
                 - string description
-                - boolean name
+                - boolean isActive
+                - DateTime createdAt
+                - DateTime updatedAt
+                ---
                 + activate(): void
                 + disable(): void
                 + update(string name, string description): void

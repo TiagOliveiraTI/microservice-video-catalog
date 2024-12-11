@@ -29,4 +29,14 @@ trait MagicMethodsTrait
     {
         return (string) $this->id;
     }
+
+    /**
+     * @param mixed string
+     * 
+     * @return string
+     */
+    public function createdAt(string $format = 'Y-m-d H:i:s'): string
+    {
+        return $this->createdAt->format($format);
+    }
 }

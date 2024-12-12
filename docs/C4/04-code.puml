@@ -62,13 +62,24 @@ package "Core" {
             }
         }
     }
+
+    package "UseCase" <<Frame>> #ffa19c {
+        package "Categories" <<Frame>> {
+            class CreateCategoryUseCase {
+                 
+            }
+        }
+    }
+
 }
 
+' Entity Category
 Category ..* "uses" MagicMethodsTrait
 Category ..> "uses" DomainValidation
 Category ..* "uses" Uuid
-
 CategoryRepositoryInterface --* "uses" Category
-
 Category ..> "throws" EntityValidationException
+
+' UseCase CreateCategoryUseCase
+CreateCategoryUseCase ..> "uses" Category
 @enduml

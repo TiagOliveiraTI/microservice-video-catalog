@@ -2,27 +2,43 @@
 
 namespace Tests\Unit\Core\UseCase\Category;
 
-use Core\Domain\Entity\Category;
-use Core\Domain\Repository\CategoryRepositoryInterface;
-use Core\UseCase\Category\CreateCategoryUseCase;
 use Mockery;
-use Mockery\MockInterface;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
-use Ramsey\Uuid\Uuid;
 use stdClass;
+use Ramsey\Uuid\Uuid;
+use Mockery\MockInterface;
+use PHPUnit\Framework\TestCase;
+use Core\Domain\Entity\Category;
+use Core\Domain\Validation\DomainValidation;
+use Core\UseCase\Dto\CategoryCreateInputDto;
+use Core\UseCase\Dto\CategoryCreateOutputDto;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Core\Domain\Entity\Traits\MagicMethodsTrait;
+use Core\UseCase\Category\CategoryCreateUseCase;
+use Core\Domain\Repository\CategoryRepositoryInterface;
+use Core\Domain\ValueObject\Uuid as ValueObjectUuid;
 
-#[CoversClass(CreateCategoryUseCase::class)]
+#[CoversClass(Category::class)]
+#[CoversClass(DomainValidation::class)]
+#[CoversClass(ValueObjectUuid::class)]
+#[CoversClass(CategoryCreateInputDto::class)]
+#[CoversClass(CategoryCreateOutputDto::class)]
+#[CoversClass(CategoryCreateUseCase::class)]
 class CategoryCreateUseCaseTest extends TestCase
 {
     private MockInterface&CategoryRepositoryInterface $categoryRepositoryMock;
     private MockInterface&Category $categoryMock;
+    private MockInterface&CategoryCreateInputDto $categoryCreateInputDtoMock;
 
     protected function setUp(): void
     {
         $this->categoryRepositoryMock = Mockery::mock(
             stdClass::class, 
             CategoryRepositoryInterface::class
+        );
+
+        $this->categoryCreateInputDtoMock = Mockery::mock(
+            stdClass::class, 
+            CategoryCreateInputDto::class
         );
     }
 
@@ -41,12 +57,21 @@ class CategoryCreateUseCaseTest extends TestCase
             [$categoryId, $categoryName]
         );
 
+        $this->categoryCreateInputDtoMock = Mockery::mock(
+            CategoryCreateInputDto::class,
+            [$categoryId, $categoryName]
+        );
+
+        $this->categoryMock->shouldReceive('id')->andReturn($categoryId);
+
         $this->categoryRepositoryMock->shouldReceive('insert')->andReturn($this->categoryMock);
 
-        $useCase = new CreateCategoryUseCase($this->categoryRepositoryMock);
+        $useCase = new CategoryCreateUseCase($this->categoryRepositoryMock);
 
-        $useCase->execute();
+        $response = $useCase->execute($this->categoryCreateInputDtoMock);
 
-        $this->assertTrue(true);
+        $this->assertInstanceOf(CategoryCreateOutputDto::class, $response);
+        $this->assertSame($response->id, $categoryId);
+        $this->assertSame($response->name, $categoryName);
     }
 }

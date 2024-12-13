@@ -64,9 +64,23 @@ package "Core" {
     }
 
     package "UseCase" <<Frame>> #ffa19c {
+        package "Dto" {
+            class CategoryCreateInputDto {
+                + string name
+                + string description = ''
+                + boolean isActive = true
+            }
+
+            class CategoryCreateOutputDto {
+                + string name
+                + string description = ''
+                + boolean isActive = true
+            }
+        }
+    
         package "Categories" <<Frame>> {
-            class CreateCategoryUseCase {
-                 
+            class CategoryCreateUseCase {
+                 - CategoryCreateOutputDto execute(CategoryCreateInputDto inputDto)
             }
         }
     }
@@ -80,6 +94,8 @@ Category ..* "uses" Uuid
 CategoryRepositoryInterface --* "uses" Category
 Category ..> "throws" EntityValidationException
 
-' UseCase CreateCategoryUseCase
-CreateCategoryUseCase ..> "uses" Category
+' UseCase CategoryCreateUseCase
+CategoryCreateUseCase ..> "uses" Category
+CategoryCreateUseCase ..* "uses" CategoryCreateInputDto
+CategoryCreateUseCase ..* "uses" CategoryCreateOutputDto
 @enduml
